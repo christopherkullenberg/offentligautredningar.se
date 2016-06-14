@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylebacka.css">
+    <title>Statens offentliga utredningar</title>
+</head>
+
+<body>
+
+
+        <h1>Statens offentliga utredningar (prototyp)</h1>
+
+        <p><b>OBS: </b> Detta är endast en prototyp. Databasen innehåller bara SOUer från 1922.</p>
+
+                <br>
+		<form action="cgi-bin/solrsearch.py" method="post">
+		<h2>Sökord: <input type="text" name="like_search_word"> <input type="submit" value="Sök" /></h2>
+
+    <!--
+    <p> <input type="radio" name="mode" value="like" checked /> Comment (LIKE)
+        <input type="radio" name="mode" value="regexp" /> Comment (Regexp)
+        <input type="radio" name="mode" value="author" /> Author (LIKE)
+        <input type="radio" name="mode" value="userid" /> Userid (LIKE)
+        <input type="radio" name="mode" value="frequency" /> Frequency (Leave blank)
+    </p>
+  -->
+
+    <br>
+    <h2>Metod</h2>
+    <p><input type="radio" name="metod" value="simple" checked /> Enkel (Nummer, fulltextlänk - snabb) <br>
+    <input type="radio" name="metod" value="advanced" /> Utökad (Nummer, fulltext, kontext - långsam)</p>
+    <br>
+
+    <h2>Sortering</h2>
+    <p>Max. resultat: <input type="number" name="result_limit" value=100 /></p>
+    <p>Datumordning</p>
+    <p><input type="radio" name="order" value="Stigande" checked /> Stigande
+    <input type="radio" name="order" value="Fallande" /> Fallande</p>
+
+		</form>
+
+
+</body>
+
+</html>
