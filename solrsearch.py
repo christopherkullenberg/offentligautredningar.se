@@ -55,6 +55,11 @@ if form.getvalue('order'):
     else:
         order = "year desc"
 
+if form.getvalue('depth'):
+    depth = form.getvalue('depth')
+else:
+    depth = 100000
+
 # Change this when there are multiple modes
 mode = 'match'
 
@@ -127,16 +132,17 @@ print('''<style>
     </style>
     ''')
 
-results = solr.search(search_string, rows = result_limit, sort = order)
+
 
 print('<p>Du sökte på ordet <b>' + search_string + '</b> i ' + mode + '-läge.\
-Sökningen genererade <b>' + format(len(results)) + '</b> träffar av\
+Sökningen genererade <b></b> träffar av\
  <b>' + str(result_limit) + '</b> möjliga. Gör en \
 <a href="http://offentligautredningar.se/index.html">ny sökning</a>.</p>')
 print("<br>")
 
 
 def printhits():
+    results = solr.search(search_string, rows = result_limit, sort = order)
     '''This only prints the metadata from the database. Fast.'''
     for result in results:
         fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
@@ -148,32 +154,34 @@ def printhits():
                 ' + fulltexturl + '</p>' )
 
 def printcontext():
-    '''This is a terribly slow proof-of-concept for printing context for
-    each search result. The look-ahead/behind regex is terribly costly.'''
+    results = solr.search(search_string, rows = result_limit, sort = order,
+                **{
+                    'hl':'true',
+                    'hl.fragsize': 100,
+                    'hl.fl': 'fulltext',
+                    'hl.maxAnalyzedChars': depth,
+                    'hl.snippets': 1000,
+                    })
     regexpresult = 0
     for result in results:
         regexpresult += 1
-        contextstring = "(.*)(" + search_string + ")(.*\n.*)"
-        resultstring = re.findall(contextstring + '.*', result['fulltext'], re.IGNORECASE)
-        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
-        >' + result['filename'][:-4] + '</a>'
+        fulltexturl = '<a href="http://offentligautredningar.se/source/\
+        ' + result['filename'] + '">' + result['filename'][:-4] + '</a>'
         year = str(result['year'])
         number = str(result['number'])
-        def iterateoverSOU():
-            inSOUresults = 0
-            outlist = []
-            for r in resultstring:
-                inSOUresults += 1
-                outputprint = (str(inSOUresults) + ". " + r[0] + r[1] + r[2])
-                outlist.append(outputprint)
-            return(inSOUresults, outlist)
+        highlights = results.highlighting
+        print("Saw {0} result(s).".format(len(results)))
+        print("Du sökte med djupet " + str(depth) + " tecken")
         print('<p>' + str(regexpresult) + '. <b>År:</b> ' + year + ', <b>Nummer\
                 : </b>' + number +' ,<b>Fulltext:</b> ' + fulltexturl + '. <b>\
-                ' + str(iterateoverSOU()[0]) + '</b> träffar.<br></p>')
-        print('<textarea rows="10" cols="100">')
-        for iteration in (iterateoverSOU()[1]):
-            print(iteration)
-        print('</textarea>')
+                </b>.<br></p>')
+        inSOUresults = 1
+        for idnumber, h in highlights.items():
+            for key, value in h.items():
+                for v in value:
+                    print('<p>' + str(inSOUresults) + ". " +  v + "</p>")
+                    inSOUresults += 1
+
 
 # Just launching the two search modes depending on input from html form.
 if metod == "simple":
