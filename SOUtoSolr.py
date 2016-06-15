@@ -7,7 +7,7 @@
 #  sudo su - solr -c "/opt/solr/bin/solr create -c souprototype -n data_driven_schema_configs"
 #
 # Then make sure there is a text_sv schema using the Sorl web interface with text_sv schema.
-# Change the Schema to read 'year' and 'number' as integers. 
+# Change the Schema to read 'year' and 'number' as integers and 'filename' as string.
 
 import csv
 import re
