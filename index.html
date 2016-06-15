@@ -11,10 +11,11 @@
         <h1>Statens offentliga utredningar (prototyp)</h1>
 
         <p><b>OBS: </b> Detta är endast en prototyp. Databasen innehåller bara SOUer från 1922.</p>
+        <p>Kod finns på <a href="https://github.com/christopherkullenberg/offentligautredningar.se">Github</a></p>
 
                 <br>
 		<form action="cgi-bin/solrsearch.py" method="post">
-		<h2>Sökord: <input type="text" name="like_search_word"> <input type="submit" value="Sök" /></h2>
+		<h2>Sökord: <input type="text" name="search_word"> <input type="submit" value="Sök" /></h2>
 
     <!--
     <p> <input type="radio" name="mode" value="like" checked /> Comment (LIKE)
@@ -33,7 +34,7 @@
 
     <h2>Sortering</h2>
     <p>Max. resultat: <input type="number" name="result_limit" value=100 /></p>
-    <p>Datumordning</p>
+    <p>Datumordning, årtal</p>
     <p><input type="radio" name="order" value="Stigande" checked /> Stigande
     <input type="radio" name="order" value="Fallande" /> Fallande</p>
 

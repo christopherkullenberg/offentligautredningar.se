@@ -26,8 +26,8 @@ solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=10)
 
 # Get data from fields
 form = cgi.FieldStorage()
-if form.getvalue('like_search_word'):
-    form_string = form.getvalue('like_search_word')
+if form.getvalue('search_word'):
+    form_string = form.getvalue('search_word')
     search_string = form_string
 else:
     search_string = "Not entered"
@@ -49,15 +49,14 @@ if form.getvalue('metod'):
 if form.getvalue('order'):
     theorder = form.getvalue('order')
     if theorder == "Stigande":
-        order = "ASC"
+        order = "year asc"
     elif theorder == "Fallande":
-        order = "DESC"
+        order = "year desc"
     else:
-        order = "ASC"
+        order = "year desc"
 
-# Change this once multiple modes are enabled
-mode = "match"
-
+# Change this when there are multiple modes
+mode = 'match'
 
 '''
 This is a bokeh time graph that takes year/frequency and turns it into
@@ -128,7 +127,7 @@ print('''<style>
     </style>
     ''')
 
-results = solr.search(search_string, rows = result_limit)
+results = solr.search(search_string, rows = result_limit, sort = order)
 
 print('<p>Du sökte på ordet <b>' + search_string + '</b> i ' + mode + '-läge.\
 Sökningen genererade <b>' + format(len(results)) + '</b> träffar av\
@@ -140,10 +139,10 @@ print("<br>")
 def printhits():
     '''This only prints the metadata from the database. Fast.'''
     for result in results:
-        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'][0] + '"\
-                        >' + result['filename'][0][:-4] + '</a>'
-        year = str(result['year'][0])
-        number = str(result['number'][0])
+        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
+                        >' + result['filename'][:-4] + '</a>'
+        year = str(result['year'])
+        number = str(result['number'])
 
         print('<p>År: ' + year + ' Nummer: ' + number + ' Länk: \
                 ' + fulltexturl + '</p>' )
@@ -156,10 +155,10 @@ def printcontext():
         regexpresult += 1
         contextstring = "(.*)(" + search_string + ")(.*\n.*)"
         resultstring = re.findall(contextstring + '.*', result['fulltext'], re.IGNORECASE)
-        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'][0] + '"\
-        >' + result['filename'][0][:-4] + '</a>'
-        year = str(result['year'][0])
-        number = str(result['number'][0])
+        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
+        >' + result['filename'][:-4] + '</a>'
+        year = str(result['year'])
+        number = str(result['number'])
         def iterateoverSOU():
             inSOUresults = 0
             outlist = []

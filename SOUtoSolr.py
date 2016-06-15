@@ -7,13 +7,14 @@
 #  sudo su - solr -c "/opt/solr/bin/solr create -c souprototype -n data_driven_schema_configs"
 #
 # Then make sure there is a text_sv schema using the Sorl web interface with text_sv schema.
+# Change the Schema to read 'year' and 'number' as integers. 
 
 import csv
 import re
 from os import listdir
 import pysolr
 
-solr = pysolr.Solr('http://localhost:8983/solr/sou/', timeout=10)
+solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=10)
 
 def tokens(text):
     words = re.findall('[A-ZÅÄÖ]|[a-zåäö]+|[\d+]', text)
@@ -21,8 +22,8 @@ def tokens(text):
 
 limit = 9
 counter = 0
-for filename in listdir(u"//directory/"):
-    with open("//directory/" + filename, encoding='utf-8') as currentfile:
+for filename in listdir(u"//home/christopher/Desktop/sousmall/"):
+    with open("//home/christopher/Desktop/sousmall/" + filename, encoding='utf-8') as currentfile:
         text = currentfile.read()
         soutext = tokens(text)
         regexpgrep = re.findall(r'(\d\d\d\d)\_(\d+)', filename)
