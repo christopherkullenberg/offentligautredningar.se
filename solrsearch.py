@@ -133,13 +133,13 @@ print('''<style>
     ''')
 
 
-
+''' This is unnecessary 
 print('<p>Du sökte på ordet <b>' + search_string + '</b> i ' + mode + '-läge.\
 Sökningen genererade <b></b> träffar av\
  <b>' + str(result_limit) + '</b> möjliga. Gör en \
 <a href="http://offentligautredningar.se/index.html">ny sökning</a>.</p>')
 print("<br>")
-
+'''
 
 def printhits():
     results = solr.search(search_string, rows = result_limit, sort = order)
@@ -162,25 +162,28 @@ def printcontext():
                     'hl.maxAnalyzedChars': depth,
                     'hl.snippets': 1000,
                     })
+    highlights = results.highlighting
+    #print(highlights)
     regexpresult = 0
+    print("Sökningen gav {0} träffar.".format(len(results)))
+    print("Du sökte med djupet " + str(depth) + " tecken")
     for result in results:
         regexpresult += 1
         fulltexturl = '<a href="http://offentligautredningar.se/source/\
         ' + result['filename'] + '">' + result['filename'][:-4] + '</a>'
+        databaseid = str(result['id']) #for debugging
         year = str(result['year'])
         number = str(result['number'])
-        highlights = results.highlighting
-        print("Saw {0} result(s).".format(len(results)))
-        print("Du sökte med djupet " + str(depth) + " tecken")
-        print('<p>' + str(regexpresult) + '. <b>År:</b> ' + year + ', <b>Nummer\
+        print('<p>' + str(regexpresult) + '.  <small>(Id: ' + databaseid + ')</small>, <b>År:</b> ' + year + ', <b>Nummer\
                 : </b>' + number +' ,<b>Fulltext:</b> ' + fulltexturl + '. <b>\
                 </b>.<br></p>')
         inSOUresults = 1
         for idnumber, h in highlights.items():
-            for key, value in h.items():
-                for v in value:
-                    print('<p>' + str(inSOUresults) + ". " +  v + "</p>")
-                    inSOUresults += 1
+            if idnumber == databaseid:
+                for key, value in h.items():
+                    for v in value:
+                        print('<p>' + str(inSOUresults) + ". (<small>Id: " + idnumber + ")</small>. " +  v + "</p>")
+                        inSOUresults += 1
 
 
 # Just launching the two search modes depending on input from html form.
