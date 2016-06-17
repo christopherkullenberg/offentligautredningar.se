@@ -34,7 +34,7 @@
 
     <h2>Djup (endast utökad sökning)</h2>
 
-    Min. <input type="range" name="depth" min="100000" max="1000000" value="100000" /> Max. (långsammare)
+    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max. (långsammare)
 
     <h2>Sortering</h2>
     <p>Max. resultat: <input type="number" name="result_limit" value=100 /></p>
@@ -43,6 +43,26 @@
     <input type="radio" name="order" value="Fallande" /> Fallande</p>
 
 		</form>
+
+    <h2>Syntax</h2>
+
+    <p><b>Jokertecken</b></p>
+    <p><code>?</code> Ett tecken kan vara vad som helst. Ex. <code>b?l</code> kan vara "bil", "bal", "bål".</p>
+    <p><code>*</code> Tillåter att ett eller flera efterföljande tecken är vad som helst. Ex. <code>bil*</code> kan vara "bil", "bilar", "bilda".</p>
+    <p><code>~</code> Ungefärlig sökning baserad på <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshteinavstånd</a>. Ex. <code>fågel~</code> kan vara "regel", "fåtal", "fåglarna"</p>
+    <p><code>"arbete marknad"~10</code> Samförekomst inom ett visst antal tecken. Här finns "arbete" och "marknad" inom 10 tecken från varandra.</p>
+
+    <p><b>Logiska operatorer</b></p>
+    <p><code>AND</code> Två sökord måste förekomma i samma text. Ex. <code>arbete AND lön</code>.</p>
+    <p><code>OR</code> Ett av flera sökord måste förekomma i samma text. Ex. <code>arbete OR slaveri</code></p>
+    <p><code>NOT</code> Förbjudet sökord i en text. Ex. <code>arbete NOT gratis</code><p>
+
+    <p><b>Söka i speciella fält</b></p>
+    <p><code>year:"1976"</code> Begränsa till ett specifikt årtal</p>
+    <p><code>number:"67"</code> Begränsa till ett specifikt nummer</p>
+    <p><code>year:"1947" AND number:"67"</code> Begränsa till specifik utredning (årtal/nummer).</p>
+    <p><code>year:[1922 TO 1980]</code> Sök inom en viss tidsepok. Från och inklusive 1922 till och inklusive 1980.</p>
+    <p><code>year:{1922 TO 1980}</code> Sök inom en viss tidsepok. Från och exklusive 1922 till och exklusive 1980.</p>
 
 
 </body>
