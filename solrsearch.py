@@ -60,6 +60,21 @@ if form.getvalue('depth'):
 else:
     depth = 100000
 
+if form.getvalue('output'):
+    theoutput = form.getvalue('output')
+    if theoutput == "show":
+        output = "show"
+    elif theoutput == "csv":
+        output = "csv"
+    elif theoutput == "tsv":
+        output = "tsv"
+    elif theoutput == "text":
+        output = "text"
+    elif theoutput == "json":
+        output = "json"
+    else:
+        output = "show"
+
 # Change this when there are multiple modes
 mode = 'match'
 
@@ -109,6 +124,14 @@ def graph():
 
 # Just printing some headers.
 print("Content-type:text/html; charset=utf-8\r\n\r\n")
+print('''
+    <head>
+        <meta charset="utf-8" />
+        <!--<link rel="stylesheet" href="style.css">-->
+        <title>Resultat</title>
+    </head>
+    <body>
+''')
 print()
 #print(graph())
 
@@ -133,7 +156,7 @@ print('''<style>
     ''')
 
 
-''' This is unnecessary 
+''' This is unnecessary
 print('<p>Du sökte på ordet <b>' + search_string + '</b> i ' + mode + '-läge.\
 Sökningen genererade <b></b> träffar av\
  <b>' + str(result_limit) + '</b> möjliga. Gör en \
@@ -185,13 +208,140 @@ def printcontext():
                         print('<p>' + str(inSOUresults) + ". (<small>Id: " + idnumber + ")</small>. " +  v + "</p>")
                         inSOUresults += 1
 
+def printcsv():
+    import csv
+    import time
+    ts = int(time.time())
+    print('Ladda ned filen <a href="http://offentligautredningar.se/results/' + str(ts) + '.csv">här</a>.')
+    csvfile = open('../results/' + str(ts) + '.csv', 'w', encoding="utf-8")
+    fieldnames = ['databaseid', 'year', 'number', 'result']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quotechar='"')
+    writer.writeheader()
+    results = solr.search(search_string, rows = result_limit, sort = order,
+                **{
+                    'hl':'true',
+                    'hl.fragsize': 100,
+                    'hl.fl': 'fulltext',
+                    'hl.maxAnalyzedChars': depth,
+                    'hl.snippets': 1000,
+                    })
+    highlights = results.highlighting
+    for result in results:
+            databaseid = str(result['id']) #for debugging
+            year = str(result['year'])
+            number = str(result['number'])
+            for idnumber, h in highlights.items():
+                if idnumber == databaseid:
+                    for key, value in h.items():
+                        for v in value:
+                            writer.writerow({'databaseid': databaseid, 'year': year, 'number': number, 'result': v})
+    csvfile.close()
+
+
+def printtsv():
+    import csv
+    import time
+    ts = int(time.time())
+    print('Ladda ned filen <a href="http://offentligautredningar.se/results/' + str(ts) + '.tsv">här</a>.')
+    csvfile = open('../results/' + str(ts) + '.tsv', 'w', encoding="utf-8")
+    fieldnames = ['databaseid', 'year', 'number', 'result']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter='\t')
+    writer.writeheader()
+    results = solr.search(search_string, rows = result_limit, sort = order,
+                **{
+                    'hl':'true',
+                    'hl.fragsize': 100,
+                    'hl.fl': 'fulltext',
+                    'hl.maxAnalyzedChars': depth,
+                    'hl.snippets': 1000,
+                    })
+    highlights = results.highlighting
+    for result in results:
+            databaseid = str(result['id']) #for debugging
+            year = str(result['year'])
+            number = str(result['number'])
+            for idnumber, h in highlights.items():
+                if idnumber == databaseid:
+                    for key, value in h.items():
+                        for v in value:
+                            writer.writerow({'databaseid': databaseid, 'year': year, 'number': number, 'result': v})
+    csvfile.close()
+
+
+def printtext():
+    import time
+    ts = int(time.time())
+    print('Ladda ned filen <a href="http://offentligautredningar.se/results/' + str(ts) + '.txt">här</a>.')
+    txtfile = open('../results/' + str(ts) + '.txt', 'w', encoding="utf-8")
+    results = solr.search(search_string, rows = result_limit, sort = order,
+                **{
+                    'hl':'true',
+                    'hl.fragsize': 100,
+                    'hl.fl': 'fulltext',
+                    'hl.maxAnalyzedChars': depth,
+                    'hl.snippets': 1000,
+                    })
+    highlights = results.highlighting
+    for result in results:
+            databaseid = str(result['id']) #for debugging
+            year = str(result['year'])
+            number = str(result['number'])
+            for idnumber, h in highlights.items():
+                if idnumber == databaseid:
+                    for key, value in h.items():
+                        for v in value:
+                            txtfile.write(databaseid + ", " + year + ", " +  number + ", " +  v + "\n")
+    txtfile.close()
+
+
+def printjson():
+    import json
+    import time
+    ts = int(time.time())
+    print('Ladda ned filen <a href="http://offentligautredningar.se/results/' + str(ts) + '.json">här</a>.')
+    jsonfile = open('../results/' + str(ts) + '.json', 'w', encoding="utf-8")
+    results = solr.search(search_string, rows = result_limit, sort = order,
+                **{
+                    'hl':'true',
+                    'hl.fragsize': 100,
+                    'hl.fl': 'fulltext',
+                    'hl.maxAnalyzedChars': depth,
+                    'hl.snippets': 1000,
+                    })
+    highlights = results.highlighting
+    for result in results:
+            databaseid = str(result['id']) #for debugging
+            year = str(result['year'])
+            number = str(result['number'])
+            for idnumber, h in highlights.items():
+                if idnumber == databaseid:
+                    for key, value in h.items():
+                        for v in value:
+                            data = {
+                            'databaseid': databaseid,
+                            'year': year,
+                            'number': number,
+                            'result': v
+                            }
+                            json.dump(data, jsonfile, indent=4, sort_keys=True,
+                            separators=(',', ':'), ensure_ascii=False)
+    jsonfile.close()
+
 
 # Just launching the two search modes depending on input from html form.
-if metod == "simple":
-    printhits()
-elif metod == "advanced":
-    printcontext()
-
+if output == "show":
+    if metod == "simple":
+        printhits()
+    elif metod == "advanced":
+        printcontext()
+elif output == "csv":
+    printcsv()
+elif output == "tsv":
+    printtsv()
+elif output == "text":
+    printtext()
+elif output == "json":
+    printjson()
 
 #print(graphcontrol())
 print('<br>Gör en <a href="http://offentligautredningar.se/index.html">ny sökning</a>.')
