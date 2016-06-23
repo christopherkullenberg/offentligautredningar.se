@@ -39,9 +39,9 @@ else:
 
 if form.getvalue('metod'):
     themetod = form.getvalue('metod')
-    if themetod == "simple":
+    if themetod == "red":
         metod = "simple"
-    elif themetod == "advanced":
+    elif themetod == "green":
         metod = "advanced"
     else:
         metod = "simple"
@@ -72,8 +72,10 @@ if form.getvalue('output'):
         output = "text"
     elif theoutput == "json":
         output = "json"
-    else:
-        output = "show"
+else:
+    output = "show"
+
+
 
 # Change this when there are multiple modes
 mode = 'match'
@@ -122,47 +124,165 @@ def graph():
     return(bokehhtml)
 '''
 
-# Just printing some headers.
+# Print HTML
+## Change directories for css and cgi-bin
 print("Content-type:text/html; charset=utf-8\r\n\r\n")
 print('''
-    <head>
-        <meta charset="utf-8" />
-        <!--<link rel="stylesheet" href="style.css">-->
-        <title>Resultat</title>
-    </head>
-    <body>
-''')
-print()
-#print(graph())
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sv-SE">
 
-print('''<style>
-    table#t01 tr:nth-child(even) {
-    background-color: #eee;
-    }
-    table#t01 tr:nth-child(odd) {
-    background-color: #fff;
-    }
-    table#t01 th {
-    color: white;
-    background-color: black;
-    }
-    td#d01 {
-    padding: 15px;
-    }
-    span.highlight {
-    background-color: yellow;
-    }
-    </style>
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<title>Sök i statens offentliga utredningar</title>
+
+<link rel="stylesheet" href="http://offentligautredningar.se/style.css" type="text/css" media="screen" />
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+<link href="https://fonts.googleapis.com/css?family=Cairo" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+<!-- Radio buttons by: http://cssdeck.com/user/ftntravis -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="red"){
+            $(".box").not(".red").hide();
+            $(".red").show();
+        }
+        if($(this).attr("value")=="green"){
+            $(".box").not(".green").hide();
+            $(".green").show();
+        }
+        if($(this).attr("value")=="blue"){
+            $(".box").not(".blue").hide();
+            $(".blue").show();
+        }
+    });
+});
+</script>
+
+
+</head>
+
+<body>
+
+
+
+
+<div id="sidebar">
+
+<div id="top">
+
+	<span class="forall">&#8704;</span>
+
+      <h1>Sök i statens <br/>offentliga utredningar</h1>
+
+</div> <!-- / top -->
+
+
+
+
+
+<div id="sidebarinside">
+
+
+
+
+
+
+
+<div id="searchbar">
+
+
+
+
+
+<div id="searchfield">
+
+<form action="solrsearch.py" method="post">
+	<input type="text" name="search_word" placeholder="Vad söker du efter?">
+
+</div> <!-- / searchfield -->
+
+
+<div id="searchoptions">
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio1" class="radio" value="red" checked/>
+<label for="radio1">Enkel sökning</label>
+</div>
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio2" class="radio" value="green" />
+<label for="radio2">Utökad sökning</label>
+</div>
+
+</div> <!-- / searchoptions -->
+
+
+
+<div id="utokadsokning">
+
+    <div class="red box"><!--Placeholder for 'enkel'--></div>
+    <div class="green box">
+
+    <p>Djup</p>
+    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max. (långsammare)
+
+    <p>Max. resultat: <br><input type="number" name="result_limit" value=100 /></p>
+    <p>Datumordning, årtal</p>
+    <p><input type="radio" name="order" value="Stigande" checked /> Stigande
+    <input type="radio" name="order" value="Fallande" /> Fallande</p>
+
+    <p>Utdata:<br>
+    <input type="radio" name="output" value="show" checked /> Visa resultat
+    <input type="radio" name="output" value="csv" /> CSV-fil (Excel)
+    <input type="radio" name="output" value="tsv" /> TSV-fil
+    <input type="radio" name="output" value="text" /> Text-fil
+    <input type="radio" name="output" value="json" /> JSON (Unicode)</p>
+
+    </div> <!-- / green box -->
+
+</div> <!-- / utokadsokning -->
+
+
+
+
+<div id="searchbutton">
+
+<input type="submit" value="Utför sökning" class="sun-flower-button">
+</form>
+</div> <!-- / searchbutton -->
+
+
+</div> <!-- / searchbar -->
+
+
+</div> <!-- / sidebarinside -->
+</div> <!-- / sidebar -->
+
+
+
+
+
+
+
+
+<div id="maindiv">
+
+
+<div id="maindivcontent">
+
+	<h2>Resultat</h2>
     ''')
 
-
-''' This is unnecessary
-print('<p>Du sökte på ordet <b>' + search_string + '</b> i ' + mode + '-läge.\
-Sökningen genererade <b></b> träffar av\
- <b>' + str(result_limit) + '</b> möjliga. Gör en \
-<a href="http://offentligautredningar.se/index.html">ny sökning</a>.</p>')
-print("<br>")
-'''
 
 def printhits():
     results = solr.search(search_string, rows = result_limit, sort = order)
@@ -347,7 +467,9 @@ elif output == "json":
 print('<br>Gör en <a href="http://offentligautredningar.se/index.html">ny sökning</a>.')
 
 print('''
-    <br>
-    </body>
-    </html>
+</div> <!-- / maindivcontent -->
+</div> <!-- / maindiv -->
+</body>
+</html>
+
     ''')

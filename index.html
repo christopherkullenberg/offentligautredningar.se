@@ -1,75 +1,164 @@
-<html>
-<head>
-    <meta charset="utf-8" />
-    <!--<link rel="stylesheet" href="style.css">-->
-    <title>Statens offentliga utredningar</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sv-SE">
+
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<title>Sök i statens offentliga utredningar</title>
+
+<link rel="stylesheet" href="./style.css" type="text/css" media="screen" />
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+<link href="https://fonts.googleapis.com/css?family=Cairo" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+<!-- Radio buttons by: http://cssdeck.com/user/ftntravis -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="red"){
+            $(".box").not(".red").hide();
+            $(".red").show();
+        }
+        if($(this).attr("value")=="green"){
+            $(".box").not(".green").hide();
+            $(".green").show();
+        }
+        if($(this).attr("value")=="blue"){
+            $(".box").not(".blue").hide();
+            $(".blue").show();
+        }
+    });
+});
+</script>
+
 
 </head>
 
 <body>
 
 
-        <h1>Statens offentliga utredningar (prototyp)</h1>
+
+
+<div id="sidebar">
+
+<div id="top">
+
+	<span class="forall">&#8704;</span>
+
+      <h1>Sök i statens <br/>offentliga utredningar</h1>
+
+</div> <!-- / top -->
 
 
 
-		<form action="cgi-bin/solrsearch.py" method="post">
-		<h2><input type="text" name="search_word"> <input type="submit" value="Sök" /></h2>
 
-    <!--
-    <p> <input type="radio" name="mode" value="like" checked /> Comment (LIKE)
-        <input type="radio" name="mode" value="regexp" /> Comment (Regexp)
-        <input type="radio" name="mode" value="author" /> Author (LIKE)
-        <input type="radio" name="mode" value="userid" /> Userid (LIKE)
-        <input type="radio" name="mode" value="frequency" /> Frequency (Leave blank)
-    </p>
-  -->
-    <br>
 
-    <p><b>Metod:</b></h2> <input type="radio" name="metod" value="simple" checked /> Enkel
-    <input type="radio" name="metod" value="advanced" /> Utökad (kontext)</p>
+<div id="sidebarinside">
 
-    <p><b>Djup:</b> Min. <input type="range" name="depth" min="100000" max="1000000" /> Max. (långsammare)</p>
 
-    <p><b>Max resultat:</b> <input type="number" name="result_limit" value=100 /></p>
 
-    <p><b>Sortering</b> <input type="radio" name="order" value="Stigande" checked /> Stigande
+
+
+
+
+<div id="searchbar">
+
+
+
+
+
+<div id="searchfield">
+
+<form action="cgi-bin/solrsearch.py" method="post">
+	<input type="text" name="search_word" placeholder="Vad söker du efter?">
+
+</div> <!-- / searchfield -->
+
+
+<div id="searchoptions">
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio1" class="radio" value="red" checked/>
+<label for="radio1">Enkel sökning</label>
+</div>
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio2" class="radio" value="green" />
+<label for="radio2">Utökad sökning</label>
+</div>
+
+</div> <!-- / searchoptions -->
+
+
+
+<div id="utokadsokning">
+
+    <div class="red box"><!--Placeholder for 'enkel'--></div>
+    <div class="green box">
+
+    <p>Djup</p>
+    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max. (långsammare)
+
+    <p>Max. resultat: <br><input type="number" name="result_limit" value=100 /></p>
+    <p>Datumordning, årtal</p>
+    <p><input type="radio" name="order" value="Stigande" checked /> Stigande
     <input type="radio" name="order" value="Fallande" /> Fallande</p>
 
-    <p><b>Utdata:</b></h2> <input type="radio" name="output" value="show" checked /> Visa resultat
+    <p>Utdata:<br>
+    <input type="radio" name="output" value="show" checked /> Visa resultat
     <input type="radio" name="output" value="csv" /> CSV-fil (Excel)
     <input type="radio" name="output" value="tsv" /> TSV-fil
     <input type="radio" name="output" value="text" /> Text-fil
     <input type="radio" name="output" value="json" /> JSON (Unicode)</p>
 
-		</form>
+    </div> <!-- / green box -->
 
-    <p><small><b>OBS: </b> Detta är endast en prototyp. Databasen innehåller bara SOUer från 1922 och det finns ännu ingen grafik.
-    Kod finns på <a href="https://github.com/christopherkullenberg/offentligautredningar.se">Github</a>.</small</p>
-
-<hr>
-    <h2>Syntax</h2>
+</div> <!-- / utokadsokning -->
 
 
-      <p><b>Jokertecken</b></p>
-      <p><code>?</code> Ett tecken kan vara vad som helst. Ex. <code>b?l</code> kan vara "bil", "bal", "bål".</p>
-      <p><code>*</code> Tillåter att ett eller flera efterföljande tecken är vad som helst. Ex. <code>bil*</code> kan vara "bil", "bilar", "bilda".</p>
-      <p><code>~</code> Ungefärlig sökning baserad på <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshteinavstånd</a>. Ex. <code>fågel~</code> kan vara "regel", "fåtal", "fåglarna"</p>
-      <p><code>"arbete marknad"~10</code> Samförekomst inom ett visst antal tecken. Här finns "arbete" och "marknad" inom 10 tecken från varandra.</p>
-
-      <p><b>Logiska operatorer</b></p>
-      <p><code>AND</code> Två sökord måste förekomma i samma text. Ex. <code>arbete AND lön</code>.</p>
-      <p><code>OR</code> Ett av flera sökord måste förekomma i samma text. Ex. <code>arbete OR slaveri</code></p>
-      <p><code>NOT</code> Förbjudet sökord i en text. Ex. <code>arbete NOT gratis</code><p>
-
-      <p><b>Söka i speciella fält</b></p>
-      <p><code>year:"1976"</code> Begränsa till ett specifikt årtal</p>
-      <p><code>number:"67"</code> Begränsa till ett specifikt nummer</p>
-      <p><code>year:"1947" AND number:"67"</code> Begränsa till specifik utredning (årtal/nummer).</p>
-      <p><code>year:[1922 TO 1980]</code> Sök inom en viss tidsepok. Från och inklusive 1922 till och inklusive 1980.</p>
-      <p><code>year:{1922 TO 1980}</code> Sök inom en viss tidsepok. Från och exklusive 1922 till och exklusive 1980.</p>
 
 
+<div id="searchbutton">
+
+<input type="submit" value="Utför sökning" class="sun-flower-button">
+</form>
+</div> <!-- / searchbutton -->
+
+
+</div> <!-- / searchbar -->
+
+
+</div> <!-- / sidebarinside -->
+</div> <!-- / sidebar -->
+
+
+
+
+
+
+
+
+<div id="maindiv">
+
+
+<div id="maindivcontent">
+
+	<h2>Resultat</h2>
+
+
+	<p>Sök</p>
+
+
+</div> <!-- / maindivcontent -->
+
+</div> <!-- / maindiv -->
 
 
 
