@@ -206,7 +206,7 @@ $(document).ready(function(){
 
 <div id="searchfield">
 
-<form action="" method="post">
+<form action="search" method="post">
 	<input type="text" name="search_word" placeholder="Vad söker du efter?">
 
 </div> <!-- / searchfield -->
@@ -317,16 +317,16 @@ def printcontext():
         databaseid = str(result['id']) #for debugging
         year = str(result['year'])
         number = str(result['number'])
-        print('<p>' + str(regexpresult) + '.  <small>(Id: ' + databaseid + ')</small>, <b>År:</b> ' + year + ', <b>Nummer\
+        print('<p>' + str(regexpresult) + '. <b>År:</b> ' + year + ', <b>Nummer\
                 : </b>' + number +' ,<b>Fulltext:</b> ' + fulltexturl + '. <b>\
                 </b>.<br></p>')
-        inSOUresults = 1
+        #inSOUresults = 1 #for debugging
         for idnumber, h in highlights.items():
             if idnumber == databaseid:
                 for key, value in h.items():
                     for v in value:
-                        print('<p>' + str(inSOUresults) + ". (<small>Id: " + idnumber + ")</small>. " +  v + "</p>")
-                        inSOUresults += 1
+                        print("<p><small>" +  v + "</small></p>")
+                        #inSOUresults += 1 #for debugging
 
 def printcsv():
     import csv
