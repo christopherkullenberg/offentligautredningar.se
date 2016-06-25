@@ -206,7 +206,7 @@ $(document).ready(function(){
 
 <div id="searchfield">
 
-<form action="solrsearch.py" method="post">
+<form action="" method="post">
 	<input type="text" name="search_word" placeholder="Vad söker du efter?">
 
 </div> <!-- / searchfield -->
