@@ -312,8 +312,8 @@ def printcontext():
     print("Du sökte med djupet " + str(depth) + " tecken")
     for result in results:
         regexpresult += 1
-        fulltexturl = '<a href="http://offentligautredningar.se/source/\
-        ' + result['filename'] + '">' + result['filename'][:-4] + '</a>'
+        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
+        >' + result['filename'][:-4] + '</a>'
         databaseid = str(result['id']) #for debugging
         year = str(result['year'])
         number = str(result['number'])
