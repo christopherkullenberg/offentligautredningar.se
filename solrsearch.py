@@ -78,7 +78,7 @@ else:
 
 
 # Change this when there are multiple modes
-mode = 'match'
+#mode = 'match'
 
 '''
 This is a bokeh time graph that takes year/frequency and turns it into
@@ -127,8 +127,7 @@ def graph():
 # Print HTML
 ## Change directories for css and cgi-bin
 print("Content-type:text/html; charset=utf-8\r\n\r\n")
-print('''
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+print('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="sv-SE">
 
 <head profile="http://gmpg.org/xfn/11">
@@ -137,11 +136,11 @@ print('''
 
 <title>Sök i statens offentliga utredningar</title>
 
-<link rel="stylesheet" href="http://offentligautredningar.se/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="./style.css" type="text/css" media="screen" />
 
 <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
-<link href="https://fonts.googleapis.com/css?family=Cairo" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
@@ -180,32 +179,19 @@ $(document).ready(function(){
 
 <div id="top">
 
-	<span class="forall">&#8704;</span>
-
-      <h1>Sök i statens <br/>offentliga utredningar</h1>
+	<div class="toppadding">
+	<span class="icon">&#9737;</span> <h1>Offentliga utredningar</h1>
+	</div>
 
 </div> <!-- / top -->
 
 
-
-
-
-<div id="sidebarinside">
-
-
-
-
-
+<div class="sidebarinside">
 
 
 <div id="searchbar">
 
-
-
-
-
 <div id="searchfield">
-
 <form action="search" method="post">
 	<input type="text" name="search_word" placeholder="Vad söker du efter?">
 
@@ -216,16 +202,15 @@ $(document).ready(function(){
 
 <div class="searchtype">
 <input type="radio" name="metod" id="radio1" class="radio" value="red" checked/>
-<label for="radio1">Enkel sökning</label>
+<label for="radio1">Enkel</label>
 </div>
 
 <div class="searchtype">
 <input type="radio" name="metod" id="radio2" class="radio" value="green" />
-<label for="radio2">Utökad sökning</label>
+<label for="radio2">Avancerad</label>
 </div>
 
 </div> <!-- / searchoptions -->
-
 
 
 <div id="utokadsokning">
@@ -233,20 +218,16 @@ $(document).ready(function(){
     <div class="red box"><!--Placeholder for 'enkel'--></div>
     <div class="green box">
 
-    <p>Djup</p>
-    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max. (långsammare)
+	<h5>Antal träffar</h5>
 
-    <p>Max. resultat: <br><input type="number" name="result_limit" value=100 /></p>
-    <p>Datumordning, årtal</p>
+    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max.
+
+    <h5>Antal resultat</h5>
+    <input type="number" name="result_limit" value=100 />
+
+    <h5>Datumordning, årtal</h5>
     <p><input type="radio" name="order" value="Stigande" checked /> Stigande
     <input type="radio" name="order" value="Fallande" /> Fallande</p>
-
-    <p>Utdata:<br>
-    <input type="radio" name="output" value="show" checked /> Visa resultat
-    <input type="radio" name="output" value="csv" /> CSV-fil (Excel)
-    <input type="radio" name="output" value="tsv" /> TSV-fil
-    <input type="radio" name="output" value="text" /> Text-fil
-    <input type="radio" name="output" value="json" /> JSON (Unicode)</p>
 
     </div> <!-- / green box -->
 
@@ -256,9 +237,7 @@ $(document).ready(function(){
 
 
 <div id="searchbutton">
-
 <input type="submit" value="Utför sökning" class="sun-flower-button">
-</form>
 </div> <!-- / searchbutton -->
 
 
@@ -268,19 +247,17 @@ $(document).ready(function(){
 </div> <!-- / sidebarinside -->
 </div> <!-- / sidebar -->
 
-
-
-
-
-
-
-
 <div id="maindiv">
+
+
+<div id="topmaindiv">
+<div class="topmaindivpadding">Ett gratis verktyg för att söka i statens offentliga utredningar. <a href="#">Läs mer.</a></div>
+</div>
 
 
 <div id="maindivcontent">
 
-	<h2>Resultat</h2>
+<div id="resulttable">
     ''')
 
 
@@ -288,13 +265,17 @@ def printhits():
     results = solr.search(search_string, rows = result_limit, sort = order)
     '''This only prints the metadata from the database. Fast.'''
     for result in results:
+        #print(result)
+
         fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
                         >' + result['filename'][:-4] + '</a>'
         year = str(result['year'])
         number = str(result['number'])
 
-        print('<p>År: ' + year + ' Nummer: ' + number + ' Länk: \
-                ' + fulltexturl + '</p>' )
+        print('<div class="resultinfo"><div class="result1"><h3>' + fulltexturl + '\
+        </h3></div><div class="result2"><h4>År: ' + year + ' Nummer: ' + number + '\
+        </h4></div></div>')
+
 
 def printcontext():
     results = solr.search(search_string, rows = result_limit, sort = order,
@@ -307,26 +288,35 @@ def printcontext():
                     })
     highlights = results.highlighting
     #print(highlights)
-    regexpresult = 0
+    resultcounter = 0
     print("Sökningen gav {0} träffar.".format(len(results)))
     print("Du sökte med djupet " + str(depth) + " tecken")
     for result in results:
-        regexpresult += 1
+        resultcounter += 1
         fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
         >' + result['filename'][:-4] + '</a>'
         databaseid = str(result['id']) #for debugging
         year = str(result['year'])
         number = str(result['number'])
-        print('<p>' + str(regexpresult) + '. <b>År:</b> ' + year + ', <b>Nummer\
+
+        print('<div class="resultinfo"><div class="result1"><h3>' + str(resultcounter) + '. ' + fulltexturl + '\
+                </h3></div><div class="result2"><h4>År: ' + year + ' Nummer: ' + number + '\
+                </h4></div></div>')
+
+        ''' #Old print function
+        print('<p>' + str(resultcounter) + '. <b>År:</b> ' + year + ', <b>Nummer\
                 : </b>' + number +' ,<b>Fulltext:</b> ' + fulltexturl + '. <b>\
                 </b>.<br></p>')
+        '''
+        print('<div class="resultinfo"><div class="result1">')
         #inSOUresults = 1 #for debugging
         for idnumber, h in highlights.items():
             if idnumber == databaseid:
                 for key, value in h.items():
                     for v in value:
-                        print("<p><small>" +  v + "</small></p>")
+                        print("<p>" +  v + "</p>")
                         #inSOUresults += 1 #for debugging
+        print('</div></div>')
 
 def printcsv():
     import csv
@@ -449,6 +439,7 @@ def printjson():
 
 
 # Just launching the two search modes depending on input from html form.
+#metod = "simple"
 if output == "show":
     if metod == "simple":
         printhits()

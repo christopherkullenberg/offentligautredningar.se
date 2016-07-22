@@ -1,13 +1,13 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Cairo', sans-serif;
+font-family: 'Open Sans', sans-serif;
 }
 
 body, html {
   width: 100%;
   height: 100%;
-  background-color: #F5F8FA;
+  background-color: #E9EFF1;
 }
 
 
@@ -23,6 +23,22 @@ a:visited {
 
 a:hover {
 	text-decoration: underline;
+}
+
+
+a:link .result {
+	text-decoration: underline;
+	color: #000;
+}
+
+a:visited .result  {
+	text-decoration: underline;
+	color: #949494;
+}
+
+a:hover .result {
+	text-decoration: underline;
+	color: #fff;
 }
 
 .redtext {
@@ -85,7 +101,7 @@ a:hover {
   }
 
   #top {
-    float: left;
+	position: fixed;
     width: 100%;
     background-color: #eee;
     margin: 0 0 50px 0;
@@ -334,28 +350,39 @@ a:hover {
 }
 
   h1 {
-    font-size: 1.5em;
-	font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 1.6em;
 	color: #333;
+	line-height: 120%;
 	font-weight: 500;
+    display: inline;
+}
+
+.icon {
+    font-size: 1.6em;
+	color: #FF5454;
+	font-weight: 500;
+	line-height: 120%;
 }
 
   h2 {
-    font-size: 2.5em;
+    font-size: 1.5em;
     margin: 0 0 50px 0;
-    text-align: center;
-	color: #b9b9b9;
-	text-shadow: 0px 2px 3px #fff;
+	color: #FF5454;
   }
 
   h3 {
-    font-size: 1.2em;
-    margin: 0 0 10px 0;
-    text-align: center;
+    font-size: 1.1em;
+    font-weight: 800;
+    font-weight: bold;
   }
 
   h4 {
-    font-size: 1.2em;
+    font-size: 1.1em;
+  }
+  
+  h5 {
+	  font-size: 1.2em;
+	  margin: 20px 0 0px 0;
   }
 
 
@@ -376,24 +403,70 @@ a:hover {
 
 
 
-#sidebar {
+
+
+#top {
 	float: left;
-	width: 30%;
-	min-height: 100%;
+	width: 100%;
+	margin: 0px 0 40px 0;
+	padding: 20px 0;
+	height: 30px;
 	background-color: #fff;
-	-webkit-box-shadow: 0px 3px 16px 0px rgba(50, 50, 50, 0.1);
-	-moz-box-shadow:    0px 3px 16px 0px rgba(50, 50, 50, 0.1);
-	box-shadow:         0px 3px 16px 0px rgba(50, 50, 50, 0.1);
+-webkit-box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
+-moz-box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
+box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
 }
 
-#sidebarinside {
-	width: 90%;
-	margin: 0 auto;
-	background-color: #c0c0c0;
+.toppadding {
+	padding: 0 0 0 0px;
+	text-align: center;
 }
+
+
+#sidebar {
+	position: fixed;
+	width: 30%;
+	min-width: 370px;
+	max-width: 400px;
+	min-height: 100%;
+	background-color: #f4f6f7;
+	overflow:scroll;
+	height: 100%;
+}
+
+
+
+
+.sidebarinside {
+	width: 80%;
+	margin: 0 auto;
+}
+
+
+
+#topmaindiv {
+	float: left;
+	width: 100%;
+	margin: 0px 0 40px 0;
+	padding: 25px 0;
+	height: 20px;
+	background-color: #fff;
+-webkit-box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
+-moz-box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
+box-shadow: 0px 2px 61px 0px rgba(192,192,192,0.5);
+}
+
+.topmaindivpadding {
+	float: right;
+	padding: 0 20px 0 0;
+	color: #898989;
+	font-size: 90%;
+}
+
+
 
 #maindiv {
-	float: left;
+	float: right;
 	width: 70%;
 }
 
@@ -404,34 +477,85 @@ a:hover {
 }
 
 
-#top {
-  float: left;
-  width: 100%;
-  margin: 0px 0 40px 0;
-  padding: 20px 0;
-  text-align: center;
+
+
+#resulttable {
+	float: left;
+	width: 90%;
+	margin: 5px 0 50px 0;
 }
+
+.resultinfo {
+	float: left;
+	width: 100%;
+	background-color: #F2F3F6;
+	border: 1px solid #e8e8e8;
+	padding: 15px 30px;
+	-webkit-border-top-left-radius: 2px;
+	-webkit-border-top-right-radius: 2px;
+	-moz-border-radius-topleft: 2px;
+	-moz-border-radius-topright: 2px;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+}
+
+.result {
+	float: left;
+	width: 100%;
+	background-color: #fff;
+	border-bottom: 1px solid #c0c0c0;
+	border-right: 1px solid #e8e8e8;
+	border-left: 1px solid #e8e8e8;
+	padding: 15px 30px;
+}
+
+.result:hover {
+	background-color: #ff7473;
+	color: #fff;
+}
+
+.result1 {
+	float: left;
+	width: 70%;
+}
+
+
+.result2 {
+	float: right;
+	width: 30%;
+}
+
+
+
+
+
+
+
+
+
 
 
 
 #searchbar {
 	float: left;
-	background: #fff;
 	width: 100%;
 }
 
 input[type=text] {
 	width: 100%;
-    padding: 9px 25px;
+    padding: 13px 20px;
     margin: 8px 0;
-    border: 3px solid #FF5454;
+    border: 2px solid #FF5454;
     box-sizing: border-box;
-    background-color: white;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+    background-color: #fff;
     background-image: url('searchicon.png');
-    background-position: 15px 15px; 
+    background-position: 13px 13px; 
     background-repeat: no-repeat;
-    padding-left: 50px;
-    font-size: 1.4em;
+    padding-left: 45px;
+    font-size: 1.2em;
 }
 
 input[type=text]:focus {
@@ -472,9 +596,9 @@ ul li input[type=radio]{
 ul li label{
   display: block;
   position: relative;
-  font-size: 1.35em;
-  padding: 25px 25px 0px 80px;
-  margin: 10px auto;
+  font-size: 1.2em;
+  padding: 15px 15px 0px 80px;
+  margin: 10px;
   height: 0px;
   z-index: 9;
   cursor: pointer;
@@ -515,6 +639,7 @@ ul li .check::before {
   margin: auto;
 	transition: background 0.25s linear;
 	-webkit-transition: background 0.25s linear;
+
 }
 
 input[type=radio]:checked ~ .check {
@@ -553,6 +678,7 @@ input[type=radio]:checked ~ label{
 	float: left;
 	width: 100%;
 	padding: 20px 0 0 0;
+	margin: 0 0 20px 0;
 }
 
 
@@ -562,11 +688,11 @@ input[type=radio]:checked ~ label{
   width: 100%;
   height: 60px;
   padding: 0;
-  font-size: 22px;
+  font-size: 1.3em;
   color: white;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  background: #FF5454;
+  background: #ff7473;
   border: 0;
   border-bottom: 2px solid #d72c2c;
   cursor: pointer;
@@ -579,6 +705,9 @@ border-radius: 10px; /* future proofing */
 -khtml-border-radius: 10px; /* for old Konqueror browsers */
 }
 
+.sun-flower-button:hover {
+	background-color: #FF5454;
+}
 
 .sun-flower-button:active {
   top: 1px;
