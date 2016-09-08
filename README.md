@@ -1,5 +1,5 @@
 # offentligautredningar.se
-Scripts for building [offentligautrednignar.se]{offentligautredningar.se}
+Scripts for building [offentligautrednignar.se](offentligautredningar.se)
 
 
 
@@ -53,5 +53,36 @@ Create a new configuration file in /etc/apache2/sites-available/ with the follow
     </VirtualHost>
 
 Activate and reload Apache2:
+
     sudo a2ensite offentligautredningar.se.conf
     sudo service apache2 reload
+
+### Installing Apache Solr 6
+Install instructions inspired by [Techadmin](http://tecadmin.net/install-apache-solr-on-ubuntu/#):
+
+    sudo apt-get update && apt-get upgrade -y
+    sudo apt-get install python-software-properties
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update
+    sudo apt-get install oracle-java8-installer
+    java -version
+    cd /opt
+    wget http://apache.mirror1.spango.com/lucene/solr/6.2.0/solr-6.2.0.tgz
+    sudo tar xzf solr-6.2.0.tgz solr-6.2.0/bin/install_solr_service.sh --strip-components=2
+    sudo bash ./install_solr_service.sh solr-6.2.0.tgz
+
+You should now be able to access the Solr admin interface at `yourhostname.com:8983/solr/#/`. **Warning:** Your machine is now exposed to the internet. Make sure you lock down your setup before proceeding and read up on Solr security.  
+
+
+
+
+
+
+
+
+
+
+### Installing scripts, Python3 modules and static html
+
+    git clone https://github.com/christopherkullenberg/offentligautredningar.se.git
+    sudo pip3 install 

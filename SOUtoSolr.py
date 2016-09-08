@@ -3,10 +3,10 @@
 
 # ## SOU text files to Solr database
 # This script will pre-process the text files, then add them to the Solr database. First, create a Sorl database with:
-# 
+#
 #  sudo su - solr -c "/opt/solr/bin/solr create -c sou -n data_driven_schema_configs"
-# 
-# Then make sure there is a text_sv schema using the Sorl web interface. 
+#
+# Then make sure there is a text_sv schema using the Sorl web interface.
 
 # In[9]:
 
@@ -16,9 +16,8 @@ from os import listdir
 import pysolr
 
 
-# In[10]:
-
-solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=10)
+# Change this to reflect your core name
+solr = pysolr.Solr('http://localhost:8983/solr/sou/', timeout=10)
 
 
 # In[11]:
@@ -32,9 +31,9 @@ def tokens(text):
 
 limit = 9
 counter = 0
-# /Users/christopher/Desktop/SOU19222015/
+# Change directories to where the documents are stored. 
 for filename in listdir(u"//home/chrisk/offentligautredningar.se/html/source/"):
-    with open("//home/chrisk/offentligautredningar.se/html/source/" + filename, encoding='utf-8') as currentfile: 
+    with open("//home/chrisk/offentligautredningar.se/html/source/" + filename, encoding='utf-8') as currentfile:
         text = currentfile.read()
         soutext = tokens(text)
         regexpgrep = re.findall(r'(\d\d\d\d)\_(\d+)', filename)
@@ -51,10 +50,8 @@ for filename in listdir(u"//home/chrisk/offentligautredningar.se/html/source/"):
                     "fulltext": text,
                 },
             ])
-        
-        
-        counter = counter + 1
-   
-        print("Added successfully: " + str(counter))
-        
 
+
+        counter = counter + 1
+
+        print("Added successfully: " + str(counter))
