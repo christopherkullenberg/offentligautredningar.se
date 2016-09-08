@@ -11,6 +11,8 @@ import sys
 import re
 import os
 import pysolr
+
+
 #import numpy as np
 #import collections
 #import pandas as pd
@@ -22,7 +24,7 @@ import pysolr
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 
-solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=10)
+solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=1000)
 
 # Get data from fields
 form = cgi.FieldStorage()
@@ -80,49 +82,6 @@ else:
 # Change this when there are multiple modes
 #mode = 'match'
 
-'''
-This is a bokeh time graph that takes year/frequency and turns it into
-a time series diagram. Not used in prototype.
-# Fix date before can be used
-def graph():
-    datelist = []
-    for date in results:
-        # [:-17] will return %Y-%m and [:-14] will return %Y-%m-%d
-        thedate = date[1][:-14]
-        datelist.append(thedate)
-
-    counter = collections.Counter(datelist)
-    output_file("/Directory", title="Resultat")
-    years = []
-    val   = []
-    yearvaldict = {}
-
-    for number in sorted(counter):
-        years.append(number)
-        value = counter[number]
-        val.append(value)
-        yearvaldict[number] = [value]
-
-    #for key, value in yearvaldict.items():
-    #    print(key, value)
-
-    # Convert data into a panda DataFrame format
-    data=pd.DataFrame({'year':years, 'value':val}, )
-
-    # Create new column (yearDate) equal to the year Column but with datetime format
-    data['yearDate']=pd.to_datetime(data['year'],format='%Y-%m-%d')
-
-    # Create a line graph with datetime x axis and use datetime column(yearDate)
-    # for this axis
-    p = figure(width=1000, height=250, x_axis_type="datetime")
-    p.logo = None
-    p.toolbar_location = "right"
-    p.line(x=data['yearDate'],y=data['value'], color="#9B287B", line_width=2)
-    #show(p) # for debugging
-    bokehhtml = file_html(p, CDN, "Resultat")
-    save(p)
-    return(bokehhtml)
-'''
 
 # Print HTML
 ## Change directories for css and cgi-bin
@@ -261,6 +220,32 @@ $(document).ready(function(){
     ''')
 
 
+def printgraph(listofyears):
+    import vincent
+    from collections import Counter
+    year_freq = Counter(listofyears).most_common(100)
+    print(year_freq)
+    labels, freq = zip(*year_freq)
+    data = {'data': freq, 'x': labels}
+    bar = vincent.Bar(data, iter_idx='x')
+    #print(bar)
+    #print(bar.to_json())
+    bar.to_json('../results/bar.json')
+  
+
+'''
+def printgraph(yearlist)
+    tweet_freq = Counter(yearlist).most_common(10)
+    #print(word_freq)
+    labels, freq = zip(*tweet_freq)
+    data = {'data': freq, 'x': labels}
+    bar = vincent.Bar(data, iter_idx='x')
+    bar.to_json('tweet_freq.json')
+'''
+
+
+
+
 def printhits():
     results = solr.search(search_string, rows = result_limit, sort = order)
     '''This only prints the metadata from the database. Fast.'''
@@ -287,18 +272,19 @@ def printcontext():
                     'hl.snippets': 1000,
                     })
     highlights = results.highlighting
-    #print(highlights)
+    #print("test")
     resultcounter = 0
     print("Sökningen gav {0} träffar.".format(len(results)))
-    print("Du sökte med djupet " + str(depth) + " tecken")
+    print("Du sökte på <b>" + search_string + "</b> med djupet " + str(depth) + " tecken")
+    yearlist = []
     for result in results:
         resultcounter += 1
         fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
         >' + result['filename'][:-4] + '</a>'
         databaseid = str(result['id']) #for debugging
         year = str(result['year'])
+        yearlist.append(year)
         number = str(result['number'])
-
         print('<div class="resultinfo"><div class="result1"><h3>' + str(resultcounter) + '. ' + fulltexturl + '\
                 </h3></div><div class="result2"><h4>År: ' + year + ' Nummer: ' + number + '\
                 </h4></div></div>')
@@ -317,6 +303,8 @@ def printcontext():
                         print("<p>" +  v + "</p>")
                         #inSOUresults += 1 #for debugging
         print('</div></div>')
+    printgraph(yearlist)
+
 
 def printcsv():
     import csv
