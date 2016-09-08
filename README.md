@@ -1,7 +1,16 @@
 # offentligautredningar.se
-Scripts for building [offentligautrednignar.se](offentligautredningar.se)
+Scripts and source data for building [offentligautrednignar.se](offentligautredningar.se). This database will contain
+index of Statens Offentliga Utredningar based on the digitalised repository
+made public by the National Library of Sweden.
 
+The search engine is based on Apache Solr and relies on Python3 and cgi-bin
+to create the dynamic front end.
 
+**Note:** This project is a prototype and nothing more. Feel free to suggest improvements
+and features.
+
+Data and source code should be free, so here follows an instruction on how to
+replicate offentligautredningar.se on your own machine(s).
 
 # Set up your own instance on Linux
 Tested with with Ubutnu 14.04 LTS on a machine with 8 Gb of RAM and 4 CPU cores.
@@ -52,6 +61,14 @@ Create a new configuration file in /etc/apache2/sites-available/ with the follow
 
     </VirtualHost>
 
+Edit `/etc/apache2/apache2.conf` to add:
+
+    <Directory /home/yourdirectory/offentligautredningar.se/>
+         Options Indexes FollowSymLinks
+         AllowOverride None
+         Require all granted
+    </Directory>
+
 Activate and reload Apache2:
 
     sudo a2ensite offentligautredningar.se.conf
@@ -97,4 +114,32 @@ Enter the Solr admin interface on `yourhostname.com:8983`. Select the core you j
 | filename | string      |
 | fulltext | text_sv      |
 
-Open up the script `SOUtoSolr.py`. Change the diretory structure to reflect where you stored the cache of text documents.
+Open up the script `SOUtoSolr.py`. Change the diretory structure to reflect where you stored the cache of text documents. **Note:** You have to change directory twice in the loop that reads the files from disk.
+
+Indexing 8000+ files will probably take some time. Use for example `screen` to be able to resume if your ssh connection drops:
+
+    screen python3 SOUtoSolr.py
+
+Wait for the files to index.
+
+### Bring up the web front
+
+Ensure that the following files that were cloned from this Git repository
+are present in the web root:
+
+    cgi-bin/solrsearch.py  
+    chart.html  
+    index.html  
+    indexPlain.html  
+    results  
+    searchicon.png  
+    style.css
+
+Edit the main script `solrsearch.py`and change the following line to reflect the
+name of your Solr core:
+
+    solr = pysolr.Solr('http://localhost:8983/solr/nameofyourcoure/', timeout=1000)
+
+Make the script executable:
+
+    chmod 755 /cgi-bin/solrsearch.py
