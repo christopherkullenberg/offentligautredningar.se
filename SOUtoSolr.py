@@ -17,7 +17,7 @@ import pysolr
 
 
 # Change this to reflect your core name
-solr = pysolr.Solr('http://localhost:8983/solr/sou/', timeout=10)
+solr = pysolr.Solr('http://localhost:8983/solr/sou/', timeout=1000)
 
 
 # In[11]:
@@ -31,9 +31,9 @@ def tokens(text):
 
 limit = 9
 counter = 0
-# Change directories to where the documents are stored. 
-for filename in listdir(u"//home/chrisk/offentligautredningar.se/html/source/"):
-    with open("//home/chrisk/offentligautredningar.se/html/source/" + filename, encoding='utf-8') as currentfile:
+# Change directories to where the documents are stored.
+for filename in listdir(u"//home/changedirectory/SOU19222015/"):
+    with open("//home/changedirectory/SOU19222015/" + filename, encoding='utf-8') as currentfile:
         text = currentfile.read()
         soutext = tokens(text)
         regexpgrep = re.findall(r'(\d\d\d\d)\_(\d+)', filename)

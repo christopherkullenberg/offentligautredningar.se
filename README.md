@@ -71,13 +71,7 @@ Install instructions inspired by [Techadmin](http://tecadmin.net/install-apache-
     sudo tar xzf solr-6.2.0.tgz solr-6.2.0/bin/install_solr_service.sh --strip-components=2
     sudo bash ./install_solr_service.sh solr-6.2.0.tgz
 
-You should now be able to access the Solr admin interface at `yourhostname.com:8983/solr/#/`. **Warning:** Your machine is now exposed to the internet. Make sure you lock down your setup before proceeding and read up on Solr security.  
-
-
-
-
-
-
+You should now be able to access the Solr admin interface at `yourhostname.com:8983`. **Warning:** Your machine is now exposed to the internet. Make sure you lock down your setup before proceeding and read up on Solr security.  
 
 
 
@@ -85,4 +79,22 @@ You should now be able to access the Solr admin interface at `yourhostname.com:8
 ### Installing scripts, Python3 modules and static html
 
     git clone https://github.com/christopherkullenberg/offentligautredningar.se.git
-    sudo pip3 install 
+    sudo pip3 install vincent pysolr
+
+
+### Index files to Solr database
+Create a new Solr core:
+
+    sudo su - solr -c "/opt/solr/bin/solr create -c sou -n data_driven_schema_configs"
+
+Enter the Solr admin interface on `yourhostname.com:8983`. Select the core you just created, then add the following to the Schema:
+
+
+| Core name     | Type          |
+| ------------- |:-------------:|
+| year      | int|
+| number    | int      |
+| filename | string      |
+| fulltext | text_sv      |
+
+Open up the script `SOUtoSolr.py`. Change the diretory structure to reflect where you stored the cache of text documents.
