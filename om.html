@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="sv-SE">
+
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width" />
+
+<title>Sök i statens offentliga utredningar</title>
+
+<link rel="stylesheet" href="./style.css" type="text/css" media="screen" />
+
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+
+
+<!-- Radio buttons by: http://cssdeck.com/user/ftntravis -->
+	
+<script type="text/javascript">
+$(document).ready(function(){
+    $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="red"){
+            $(".box").not(".red").hide();
+            $(".red").show();
+        }
+        if($(this).attr("value")=="green"){
+            $(".box").not(".green").hide();
+            $(".green").show();
+        }
+        if($(this).attr("value")=="blue"){
+            $(".box").not(".blue").hide();
+            $(".blue").show();
+        }
+    });
+});
+</script>
+
+
+</head>
+
+<body>
+	
+
+	
+	
+<div id="sidebar">
+
+<a href="/"><div id="top">
+	
+	<div class="toppadding">
+	<span class="icon">&#9737;</span> <h1>Offentliga utredningar</h1>
+	</div>
+	
+</div> <!-- / top --></a>
+
+
+<div class="sidebarinside">
+
+
+<div id="searchbar">	
+	
+<div id="searchfield">
+    <form action="search" method="post">	
+	<input type="text" name="search_word" placeholder="Vad söker du efter?">
+
+</div> <!-- / searchfield -->
+
+
+<div id="searchoptions">
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio1" class="radio" value="red" checked/>
+<label for="radio1">Enkel</label>
+</div>
+
+<div class="searchtype">
+<input type="radio" name="metod" id="radio2" class="radio" value="green" />
+<label for="radio2">Avancerad</label>
+</div>
+
+</div> <!-- / searchoptions -->
+
+
+<div id="utokadsokning">
+
+    <div class="red box"><!--Placeholder for 'enkel'--></div>
+    <div class="green box">
+
+	<h5>Antal träffar</h5>
+
+    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max.
+
+    <h5>Antal resultat</h5>
+    <input type="number" name="result_limit" value=100 />
+    
+    <h5>Datumordning, årtal</h5>
+    <p><input type="radio" name="order" value="Stigande" checked /> Stigande
+    <input type="radio" name="order" value="Fallande" /> Fallande</p>
+	
+    </div> <!-- / green box -->
+    
+</div> <!-- / utokadsokning -->    
+    
+    
+    
+
+<div id="searchbutton">	
+<input type="submit" value="Utför sökning" class="sun-flower-button">
+</div> <!-- / searchbutton -->
+    
+    
+</div> <!-- / searchbar -->
+
+
+</div> <!-- / sidebarinside -->
+</div> <!-- / sidebar -->
+
+
+
+
+
+<div id="topmaindiv">
+<div class="topmaindivpadding">Ett gratis verktyg för att söka i statens offentliga utredningar. <a href="./om.html">Läs mer.</a></div>
+</div>
+
+
+	
+<div id="maindiv">
+		
+	
+<div id="maindivcontent">
+	
+<h2>Ett enkelt sätt att söka i offentliga utredningar</h2>
+
+<p>Med verktyget Offentligautredningar.se kan du enkelt söka i alla statens offentliga utredningar. Materialet består av 8059 Statliga Offentliga Utredningar som digitaliserats av <a href="http://regina.kb.se/sou/">Kungliga biblioteket</a>. </p>
+
+<p>Tjänsten befinner sig i ett tidigt utvecklingsskede och kommer att förändras med tiden. Nuvarande version har vissa begränsningar i antalet sökträffar på grund av begränsad hårdvara.</p>
+
+<p>Tjänsten är byggd med Apache Solr och är licensierad under <a href="https://opensource.org/licenses/MIT">MIT-licensen</a>. All kod och källdata är fritt tillgänglig på <a href="https://github.com/christopherkullenberg/offentligautredningar.se">Github</a> där det också finns instruktioner om hur man kan replikera denna sökmotor.</p>
+
+<p>Verktyget skapades av <a href="http://www.christopherkullenberg.se">Christopher Kullenberg</a> och <a href="http://filipsvensson.com">Filip Svensson</a> 2016.</p>	
+
+
+</div> <!-- / resulttable -->	
+
+
+
+
+
+
+
+</div> <!-- / maindivcontent -->
+
+</div> <!-- / maindiv -->
+
+
+
+</body>
+
+</html>

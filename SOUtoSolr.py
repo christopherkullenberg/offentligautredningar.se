@@ -1,33 +1,50 @@
+#coding: utf-8
+'''
+SOU text files to Solr database
 
-# coding: utf-8
+This script will pre-process the text files, then add them to the Solr database. 
+First, create a Sorl database with:
 
-# ## SOU text files to Solr database
-# This script will pre-process the text files, then add them to the Solr database. First, create a Sorl database with:
-#
-#  sudo su - solr -c "/opt/solr/bin/solr create -c sou -n data_driven_schema_configs"
-#
-# Then make sure there is a text_sv schema using the Sorl web interface.
+  sudo su - solr -c "/opt/solr/bin/solr create -c sou -n data_driven_schema_configs"
 
-# In[9]:
+Then add the following schema to the core:
+
+year - int
+number - int
+filename - string
+url - string
+fulltext - text_sv
+
+'''
 
 import csv
 import re
 from os import listdir
 import pysolr
+import sqlite3
+
+'''
+This database contains the URLs according to the following schema:
+CREATE TABLE main (id INT PRIMARY KEY, year INT, number INT, url TEXT);
+'''
+conn = sqlite3.connect('SOUpdfURLMerged.sqlite3') 
+
+def querydb(year, number):
+    '''Returns URL if there is one in DB'''
+    search = conn.execute('SELECT * FROM main WHERE year=(?) AND number=(?)', (year, number, ))
+    url = "notfound.html"
+    for s in search:
+        url = s[3]
+    return(url)
 
 
 # Change this to reflect your core name
 solr = pysolr.Solr('http://localhost:8983/solr/sou/', timeout=1000)
 
-
-# In[11]:
-
+# tokenizer for the fulltext
 def tokens(text):
     words = re.findall('[A-ZÅÄÖ]|[a-zåäö]+|[\d+]', text)
     return ' '.join(words)
-
-
-# In[12]:
 
 limit = 9
 counter = 0
@@ -40,13 +57,14 @@ for filename in listdir(u"//home/changedirectory/SOU19222015/"):
         year = regexpgrep[0][0]
         number = regexpgrep[0][1]
         yearnumber = year + ":" + number
-
+        url = querydb(year, number)
         solr.add([
                 {
                     "id": counter,
                     "year": year,
                     "number": number,
                     "filename": filename,
+                    "pdfurl": url,
                     "fulltext": text,
                 },
             ])
@@ -55,3 +73,5 @@ for filename in listdir(u"//home/changedirectory/SOU19222015/"):
         counter = counter + 1
 
         print("Added successfully: " + str(counter))
+        print("SOU " + year + ":" + number + " " + url) 
+        print("---") 

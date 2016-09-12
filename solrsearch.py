@@ -10,21 +10,14 @@ import cgi, cgitb
 import sys
 import re
 import os
-import pysolr
+from urllib.parse import urlencode
+from urllib.request import urlopen
+import simplejson
+from collections import OrderedDict
 
-
-#import numpy as np
-#import collections
-#import pandas as pd
-#from bokeh.plotting import figure, output_file, save
-#from bokeh.embed import file_html
-#from bokeh.resources import CDN
 
 # Fix IO and utf8
 sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
-
-
-solr = pysolr.Solr('http://localhost:8983/solr/souprototype/', timeout=1000)
 
 # Get data from fields
 form = cgi.FieldStorage()
@@ -37,7 +30,7 @@ else:
 if form.getvalue('result_limit'):
     result_limit = form.getvalue('result_limit')
 else:
-    result_limit = 10
+    result_limit = 50
 
 if form.getvalue('metod'):
     themetod = form.getvalue('metod')
@@ -86,7 +79,8 @@ else:
 # Print HTML
 ## Change directories for css and cgi-bin
 print("Content-type:text/html; charset=utf-8\r\n\r\n")
-print('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+print('''
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="sv-SE">
 
 <head profile="http://gmpg.org/xfn/11">
@@ -106,7 +100,7 @@ print('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://
 
 
 <!-- Radio buttons by: http://cssdeck.com/user/ftntravis -->
-
+	
 <script type="text/javascript">
 $(document).ready(function(){
     $('input[type="radio"]').click(function(){
@@ -130,29 +124,29 @@ $(document).ready(function(){
 </head>
 
 <body>
+	
 
-
-
-
+	
+	
 <div id="sidebar">
 
-<div id="top">
-
+<a href="/"><div id="top">
+	
 	<div class="toppadding">
 	<span class="icon">&#9737;</span> <h1>Offentliga utredningar</h1>
 	</div>
-
-</div> <!-- / top -->
+	
+</div> <!-- / top --></a>
 
 
 <div class="sidebarinside">
 
 
-<div id="searchbar">
-
+<div id="searchbar">	
+	
 <div id="searchfield">
-<form action="search" method="post">
-	<input type="text" name="search_word" placeholder="Vad söker du efter?">
+<form action="search" method="post">	
+	<input type="text" name="search_word" value="''' + search_string + '''">
 
 </div> <!-- / searchfield -->
 
@@ -177,135 +171,175 @@ $(document).ready(function(){
     <div class="red box"><!--Placeholder for 'enkel'--></div>
     <div class="green box">
 
+<!--
 	<h5>Antal träffar</h5>
 
     Min. <input type="range" name="depth" min="100000" max="1000000" /> Max.
 
     <h5>Antal resultat</h5>
     <input type="number" name="result_limit" value=100 />
-
+-->
     <h5>Datumordning, årtal</h5>
     <p><input type="radio" name="order" value="Stigande" checked /> Stigande
     <input type="radio" name="order" value="Fallande" /> Fallande</p>
-
+	
     </div> <!-- / green box -->
+    
+</div> <!-- / utokadsokning -->    
+    
+    
+    
 
-</div> <!-- / utokadsokning -->
-
-
-
-
-<div id="searchbutton">
+<div id="searchbutton">	
 <input type="submit" value="Utför sökning" class="sun-flower-button">
 </div> <!-- / searchbutton -->
-
-
+    
+    
 </div> <!-- / searchbar -->
 
 
 </div> <!-- / sidebarinside -->
 </div> <!-- / sidebar -->
 
-<div id="maindiv">
+
+
 
 
 <div id="topmaindiv">
-<div class="topmaindivpadding">Ett gratis verktyg för att söka i statens offentliga utredningar. <a href="#">Läs mer.</a></div>
+<div class="topmaindivpadding">Ett gratis verktyg för att söka i statens offentliga utredningar. <a href="./om.html">Läs mer.</a></div>
 </div>
 
 
+	
+<div id="maindiv">
+		
+	
 <div id="maindivcontent">
+''')
 
-<div id="resulttable">
-    ''')
+	
+header = '''<div id="resulttable"><div class="resultinfo">
+                <div class="result1">
+                        <h3>Namn</h3>
+                </div> <!-- / result1 -->
 
+                <div class="result3">
+                        <h3>PDF</h3>
+                </div> <!-- / result3 -->
 
-def printgraph(listofyears):
-    import vincent
-    from collections import Counter
-    year_freq = Counter(listofyears).most_common(100)
-    print(year_freq)
-    labels, freq = zip(*year_freq)
-    data = {'data': freq, 'x': labels}
-    bar = vincent.Bar(data, iter_idx='x')
-    #print(bar)
-    #print(bar.to_json())
-    bar.to_json('../results/bar.json')
-  
+                <div class="result2">
+                        <h3>Publicerad</h3>
+                </div> <!-- / result2 -->
+        </div> <!-- / result -->'''
 
-'''
-def printgraph(yearlist)
-    tweet_freq = Counter(yearlist).most_common(10)
-    #print(word_freq)
-    labels, freq = zip(*tweet_freq)
-    data = {'data': freq, 'x': labels}
-    bar = vincent.Bar(data, iter_idx='x')
-    bar.to_json('tweet_freq.json')
-'''
-
-
-
+def enkelsearch(searchword, start, rows):
+    qstr = urlencode(OrderedDict([('q', searchword), 
+                                ('wt', 'json'), 
+                                #('sort', 'year asc'),
+                                ('start', start),
+                                ('rows', rows)]))
+    return(qstr)
 
 def printhits():
-    results = solr.search(search_string, rows = result_limit, sort = order)
+    #results = solr.search(search_string, rows = "30") #add sort=order to sort by order varialb3e
+    connection = urlopen(u'http://localhost:8983/solr/sou/select?' + enkelsearch(search_string, 0, 24))
+    results = simplejson.load(connection)
+    print('''
+    <div class="resulttitle"> <span class="resulttitletext">Hittade ''' + str(results['response']['numFound']) + ''' resultat.</span> </div> <!-- / resulttitle -->
+    ''')
+    print(header)
+    #<div class="resulttitle"> <span class="resulttitletext">Vi hittade 553 resultat:</span> </div> <!-- / resulttitle -->
+
     '''This only prints the metadata from the database. Fast.'''
-    for result in results:
+    for result in results['response']['docs']:
         #print(result)
 
-        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
-                        >' + result['filename'][:-4] + '</a>'
+        fulltexturl = '<a href="http://offentligautredningar.se/sourcehtml/' + result['filename'][:-3] + 'html"\
+                        ><h3>' + result['filename'][:-4] + '</h3></a>'
         year = str(result['year'])
         number = str(result['number'])
+        print('''
+        	<div class="result">
+		<div class="result1">
+			''' + fulltexturl + '''
+		</div> <!-- / result1 -->
+		
+            ''')
+        print('''
+            <div class="result3">
+	    <a href="''' + result['pdfurl'] + '''"><h5>Ladda ner</h5></a>
+	    </div> <!-- / result1 -->
+            ''')
+        print('''
+		<div class="result2">
+			<h4>År: '''+ year + '''  Nummer: ''' + number + '''</h4>
+		</div> <!-- / result1 -->
+	</div> <!-- / result -->
+            ''')
 
-        print('<div class="resultinfo"><div class="result1"><h3>' + fulltexturl + '\
-        </h3></div><div class="result2"><h4>År: ' + year + ' Nummer: ' + number + '\
-        </h4></div></div>')
+def avanceradsearch(searchword, start, rows):
+    qstr = urlencode(OrderedDict([('q', searchword), 
+                                ('wt', 'json'), 
+                                ('sort', 'year asc'),
+                                ('start', start),
+                                ('rows', rows),
+                                ('hl', 'true'),
+                                ('hl.q', searchword),
+                                ('hl.fl', 'fulltext'),
+                                ('hl.fragsize', 100),
+                                ('hl.snippets', 1000),
+                                ('hl.maxAnalyzedChars', 1000000),
+                                ('hl.simple.pre', '<mark>'),
+                                ('hl.simple.post', '</mark>')
+                                ]))
+    return(qstr)
+
 
 
 def printcontext():
-    results = solr.search(search_string, rows = result_limit, sort = order,
-                **{
-                    'hl':'true',
-                    'hl.fragsize': 100,
-                    'hl.fl': 'fulltext',
-                    'hl.maxAnalyzedChars': depth,
-                    'hl.snippets': 1000,
-                    })
-    highlights = results.highlighting
-    #print("test")
+    connection = urlopen(u'http://localhost:8983/solr/sou/select?' + avanceradsearch(search_string, 0, 9))
+    results = simplejson.load(connection)
     resultcounter = 0
-    print("Sökningen gav {0} träffar.".format(len(results)))
-    print("Du sökte på <b>" + search_string + "</b> med djupet " + str(depth) + " tecken")
     yearlist = []
-    for result in results:
+    print('''
+    <div class="resulttitle"> <span class="resulttitletext">Hittade ''' + str(results['response']['numFound']) + ''' resultat.</span> </div> <!-- / resulttitle -->
+    ''')
+    print(header)
+    #print(results['response']['start'], "start")
+    for result in results['response']['docs']:
         resultcounter += 1
-        fulltexturl = '<a href="http://offentligautredningar.se/source/' + result['filename'] + '"\
+        fulltexturl = '<a href="http://offentligautredningar.se/sourcehtml/' + result['filename'][:-3] + 'html"\
         >' + result['filename'][:-4] + '</a>'
         databaseid = str(result['id']) #for debugging
         year = str(result['year'])
         yearlist.append(year)
         number = str(result['number'])
-        print('<div class="resultinfo"><div class="result1"><h3>' + str(resultcounter) + '. ' + fulltexturl + '\
-                </h3></div><div class="result2"><h4>År: ' + year + ' Nummer: ' + number + '\
-                </h4></div></div>')
+        print('''
+                <div class="result">
+                <div class="result1">
+                        ''' + fulltexturl + '''
 
-        ''' #Old print function
-        print('<p>' + str(resultcounter) + '. <b>År:</b> ' + year + ', <b>Nummer\
-                : </b>' + number +' ,<b>Fulltext:</b> ' + fulltexturl + '. <b>\
-                </b>.<br></p>')
-        '''
-        print('<div class="resultinfo"><div class="result1">')
-        #inSOUresults = 1 #for debugging
-        for idnumber, h in highlights.items():
-            if idnumber == databaseid:
-                for key, value in h.items():
-                    for v in value:
-                        print("<p>" +  v + "</p>")
-                        #inSOUresults += 1 #for debugging
+            ''')
+          
+        for f, v in results['highlighting'][result['id']].items():
+            print("<p>" +  v[0] + "</p>")
+
+        print('</div>')
+        print('''
+            <div class="result3">
+            <a href="''' + result['pdfurl'] + '''"><h5>Ladda ner</h5></a>
+            </div> <!-- / result1 -->
+            ''')
+        print('''
+                <div class="result2">
+                        <h4>År: '''+ year + '''  Nummer: ''' + number + '''</h4>
+        
+            ''')
         print('</div></div>')
-    printgraph(yearlist)
 
+    #printgraph(yearlist)
 
+'''
 def printcsv():
     import csv
     import time
@@ -424,7 +458,7 @@ def printjson():
                             json.dump(data, jsonfile, indent=4, sort_keys=True,
                             separators=(',', ':'), ensure_ascii=False)
     jsonfile.close()
-
+'''
 
 # Just launching the two search modes depending on input from html form.
 #metod = "simple"
@@ -442,13 +476,14 @@ elif output == "text":
 elif output == "json":
     printjson()
 
-#print(graphcontrol())
-print('<br>Gör en <a href="http://offentligautredningar.se/index.html">ny sökning</a>.')
 
 print('''
+
+</div> <!-- / resulttable -->	
 </div> <!-- / maindivcontent -->
 </div> <!-- / maindiv -->
-</body>
-</html>
 
+</body>
+
+</html>
     ''')
