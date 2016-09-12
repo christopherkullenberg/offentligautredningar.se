@@ -112,16 +112,15 @@ Enter the Solr admin interface on `yourhostname.com:8983`. Select the core you j
 | year      | int|
 | number    | int      |
 | filename | string      |
-| pdfurl | string	|
 | fulltext | text_sv      |
 
-Open up the script `SOUtoSolr.py`. Change the diretory structure to reflect where you stored the cache of text documents. **Note:** You have to change directory twice in the loop that reads the files from disk. **Note:** You must have `sqlite3` installed on your system to read the PDF urls. On ubuntu: `sudo apt-get install sqlite3`.
+Open up the script `SOUtoSolr.py`. Change the diretory structure to reflect where you stored the cache of text documents. **Note:** You have to change directory twice in the loop that reads the files from disk.
 
 Indexing 8000+ files will probably take some time. Use for example `screen` to be able to resume if your ssh connection drops:
 
     screen python3 SOUtoSolr.py
 
-Wait for the files to index. On the above mentioned setup it was done in ~2 hours. 
+Wait for the files to index.
 
 ### Bring up the web front
 
