@@ -287,7 +287,7 @@ def avanceradsearch(searchword, start, rows):
                                 ('hl.q', searchword),
                                 ('hl.fl', 'fulltext'),
                                 ('hl.fragsize', 100),
-                                ('hl.snippets', 1000),
+                                ('hl.snippets', 10),
                                 ('hl.maxAnalyzedChars', 1000000),
                                 ('hl.simple.pre', '<mark>'),
                                 ('hl.simple.post', '</mark>')
