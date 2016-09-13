@@ -90,6 +90,9 @@ Install instructions inspired by [Techadmin](http://tecadmin.net/install-apache-
 
 You should now be able to access the Solr admin interface at `yourhostname.com:8983`. **Warning:** Your machine is now exposed to the internet. Make sure you lock down your setup before proceeding and read up on Solr security.  
 
+Increasing memory heap. The default configuration of Solr will crash unless you increase the memory heap.
+The data is too large for the default 512Mb. Edit `/etc/decault/solr.in.sh` and change the heap size into `SOLR_HEAP="6g"`.
+
 
 
 
@@ -121,7 +124,7 @@ Indexing 8000+ files will probably take some time. Use for example `screen` to b
 
     screen python3 SOUtoSolr.py
 
-Wait for the files to index. On the above mentioned setup it was done in ~2 hours. 
+Wait for the files to index. On the above mentioned setup it was done in ~2 hours.
 
 ### Bring up the web front
 
