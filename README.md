@@ -51,6 +51,7 @@ Create a new configuration file in /etc/apache2/sites-available/ with the follow
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 
         ScriptAlias /search /home/username/offentligautredningar.se/cgi-bin/solrsearch.py
+        ScriptAlias /api /home/chrisk/www/offentligautredningar.se/cgi-bin/api.py
 
         <Directory "/home/username/offentligautredningar.se/cgi-bin">
                 AllowOverride None
