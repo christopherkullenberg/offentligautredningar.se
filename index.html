@@ -22,17 +22,13 @@
 <script type="text/javascript">
 $(document).ready(function(){
     $('input[type="radio"]').click(function(){
-        if($(this).attr("value")=="red"){
-            $(".box").not(".red").hide();
-            $(".red").show();
+        if($(this).attr("value")=="simple"){
+            $(".box").not(".simple").hide();
+            $(".simple").show();
         }
-        if($(this).attr("value")=="green"){
-            $(".box").not(".green").hide();
-            $(".green").show();
-        }
-        if($(this).attr("value")=="blue"){
-            $(".box").not(".blue").hide();
-            $(".blue").show();
+        if($(this).attr("value")=="advanced"){
+            $(".box").not(".advanced").hide();
+            $(".advanced").show();
         }
     });
 });
@@ -63,8 +59,9 @@ $(document).ready(function(){
 <div id="searchbar">	
 	
 <div id="searchfield">
-<form action="search" method="post">
-	<input type="text" name="search_word" placeholder="Vad söker du efter?">
+	
+<form action="search" method="get">
+        <input type="text" name="q" placeholder="Vad söker du efter?">
 
 </div> <!-- / searchfield -->
 
@@ -72,12 +69,12 @@ $(document).ready(function(){
 <div id="searchoptions">
 
 <div class="searchtype">
-<input type="radio" name="metod" id="radio1" class="radio" value="red" checked/>
+<input type="radio" name="method" id="radio1" class="radio" value="simple" checked/>
 <label for="radio1">Enkel</label>
 </div>
 
 <div class="searchtype">
-<input type="radio" name="metod" id="radio2" class="radio" value="green" />
+<input type="radio" name="method" id="radio2" class="radio" value="advanced" />
 <label for="radio2">Avancerad</label>
 </div>
 
@@ -86,19 +83,12 @@ $(document).ready(function(){
 
 <div id="utokadsokning">
 
-    <div class="red box"><!--Placeholder for 'enkel'--></div>
-    <div class="green box">
-
-	<!-- <h5>Djup</h5>
-
-    Min. <input type="range" name="depth" min="100000" max="1000000" /> Max.
-
-    <h5>Antal resultat</h5>
-    <input type="number" name="result_limit" value=100 />
-    -->
+    <div class="simple box"><!--Placeholder for 'enkel'--></div>
+    <div class="advanced box">
+    
     <h5>Datumordning, årtal</h5>
-    <p><input type="radio" name="order" value="Stigande" checked /> Stigande
-    <input type="radio" name="order" value="Fallande" /> Fallande</p>
+    <p><input type="radio" name="order" value="year asc" checked /> Stigande
+    <input type="radio" name="order" value="year desc" /> Fallande</p>
 	
     </div> <!-- / green box -->
     
@@ -132,8 +122,10 @@ $(document).ready(function(){
 		
 	
 <div id="maindivcontent">
-
 	
+	<div class="resulttitle">
+	<span class="resulttitletext">Vi hittade 553 resultat:</span>
+	</div> <!-- / resulttitle -->
 
 <div id="resulttable">
 	
@@ -141,16 +133,17 @@ $(document).ready(function(){
 		<div class="result1">
 			<h3>Namn</h3>
 		</div> <!-- / result1 -->
-			
+		
 		<div class="result3">
 			<h3>PDF</h3>
 		</div> <!-- / result3 -->
-	
+
 		<div class="result2">
 			<h3>Publicerad</h3>
 		</div> <!-- / result2 -->
-	</div> <!-- / result -->	
-
+	</div> <!-- / result -->
+	
+	
 
 	
 
