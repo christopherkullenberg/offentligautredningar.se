@@ -1,5 +1,5 @@
 # offentligautredningar.se
-Scripts and source data for building [offentligautrednignar.se](offentligautredningar.se). This database will contain
+Scripts and source data for building [offentligautredningar.flov.gu.se](http://offentligautredningar.flov.gu.se). This database will contain
 index of Statens Offentliga Utredningar based on the digitalised repository
 made public by the National Library of Sweden.
 
